@@ -47,6 +47,7 @@ public class ChatManager {
         }
 
         saveMessageToChatHistory(message);
+        Logger.instance.sendConsole(message.getAuthor().getName() + " > " + message.getRawContent());
     }
 
     private void saveMessageToChatHistory(Message message) {

@@ -4,6 +4,7 @@ import by.vengdevs.vchat.commands.Chat;
 import by.vengdevs.vchat.handlers.PlayerChat;
 import by.vengdevs.vchat.handlers.PlayerJoin;
 import by.vengdevs.vchat.utils.Logger;
+import by.vengdevs.vchat.utils.Updater;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -21,6 +22,8 @@ public final class VChat extends JavaPlugin {
 
         registerHandlers();
         registerCommands();
+
+        Updater.getUpdates();
 
         Logger.instance.sendConsole("&5[vChat]&r &aSuccessfully enabled!");
     }
