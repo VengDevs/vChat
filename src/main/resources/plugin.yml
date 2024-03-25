@@ -1,0 +1,12 @@
+name: vChat
+version: '${project.version}'
+main: by.vengdevs.vchat.VChat
+api-version: '1.20'
+prefix: vChat
+load: STARTUP
+authors: [VengDevs]
+description: Powerful chat plugin for minecraft.
+commands:
+  chat:
+    aliases:
+      - vchat

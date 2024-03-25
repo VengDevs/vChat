@@ -1,0 +1,32 @@
+chat:
+  enabled: true
+  pattern: "&b%NAME% &7❯ &f"
+  transliteration:
+    enabled: true
+    button-pattern: "&8&l♺"
+    button-hover: "Транслитерировать"
+    pattern: "&8(транслитерировано)"
+  chat-history:
+    enabled: true
+    message: "&bИстория чата загружена!"
+  links:
+    enabled: true
+    https:
+      pattern: "&aссылка"
+      hover: "Ведёт на: %LINK%"
+    http:
+      pattern: "&cне защищённая ссылка"
+      hover: "Ведёт на: %LINK%"
+  mentions:
+    enabled: true
+    answer-hover: "Нажмите чтобы ответить"
+    pattern: "&e@%MENTION%"
+    hover: "Игрок %AUTHOR% упомянул игрока %MENTION%"
+    everyone:
+      enabled: true
+      pattern: "&6@everyone"
+      hover: "Игрок %AUTHOR% упомянул всех игроков"
+    title:
+      title: ""
+      subtitle: "&e%AUTHOR% упомянул вас"
+      time: 3
