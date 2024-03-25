@@ -38,8 +38,8 @@ public class Chat implements CommandExecutor, TabCompleter {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b - &fТеперь в конце Вашего сообщения есть кнопка \"Транслитерировать\", нажав на которую, все английские символы в Вашем сообщении заменятся на русские!"));
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b - &fНажав на имя отправителя сообщения в чате, можно ответить на него."));
         } else if (strings[0].equalsIgnoreCase("transliterate")) {
-            char[] russianSymbols = "йцукенгшщзхъфывапролджэячсмитьбюё".toCharArray();
-            char[] englishSymbols = "qwertyuiop[]asdfghjkl;'zxcvbnm,.`".toCharArray();
+            char[] russianSymbols = "йцукенгшщзхъфывапролджэячсмитьбюёЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮЁ".toCharArray();
+            char[] englishSymbols = "qwertyuiop[]asdfghjkl;'zxcvbnm,.`QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>~".toCharArray();
 
             Map<Character, Character> symbolMap = new HashMap<>();
             for (int i = 0; i < englishSymbols.length; i++) {
