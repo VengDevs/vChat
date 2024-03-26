@@ -5,6 +5,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -16,8 +18,12 @@ public class Updater {
         try {
             String latestVersion = getLatestVersion();
             if (latestVersion != null && !latestVersion.equals(VChat.instance.getPluginMeta().getVersion())) {
-                for (int i = 0; i < 100; i++) Logger.instance.sendConsole(ChatColor.translateAlternateColorCodes('&', "&5[vChat]&r &cNEW VERSION FOUND! THE SERVER WILL AUTOMATICALLY RESTART AFTER THE UPDATE!"));
+                for (int i = 0; i < 10; i++) Logger.instance.sendConsole(ChatColor.translateAlternateColorCodes('&', "&5[vChat]&r &cNEW VERSION FOUND! THE SERVER WILL AUTOMATICALLY RESTART AFTER THE UPDATE!"));
                 updatePlugin();
+                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "save-all");
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    player.kickPlayer(ChatColor.BLUE + "vChat plugin updating...");
+                }
                 Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "restart");
             } else {
                 Logger.instance.sendConsole("&5[vChat]&r &aYou have the latest version installed!");
@@ -74,5 +80,14 @@ public class Updater {
         } else {
             return null;
         }
+    }
+
+    public static void startUpdateScheduler() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                getUpdates();
+            }
+        }.runTaskTimer(VChat.instance, 0L, 20 * 60 * 60 * 6);
     }
 }

@@ -1,6 +1,8 @@
-package by.vengdevs.vchat.utils;
+package by.vengdevs.vchat.managers;
 
 import by.vengdevs.vchat.VChat;
+import by.vengdevs.vchat.classes.Message;
+import by.vengdevs.vchat.utils.Emoji;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -12,12 +14,15 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MessageManager {
     
     public static final MessageManager instance = new MessageManager();
     
-    public void formatMessage(String message, Player author, boolean transliterated) {
+    public void formatMessage(String message, Player author, boolean transliterated, boolean mentioning) {
         List<BaseComponent> messageComponents = new ArrayList<>();
 
         String message_pattern = VChat.instance.getConfig().getString("chat.pattern");
@@ -30,6 +35,27 @@ public class MessageManager {
         messageComponents.add(whoSender);
 
         List<Player> mentioned_players = new ArrayList<>();
+
+        if (VChat.instance.getConfig().getBoolean("chat.emojis.enabled")) {
+            String emojiSymbol = VChat.instance.getConfig().getString("chat.emojis.symbol");
+            assert emojiSymbol != null;
+            String regex = Pattern.quote(emojiSymbol) + "([^" + Pattern.quote(emojiSymbol) + "]+)" + Pattern.quote(emojiSymbol);
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(message);
+
+            StringBuilder result = new StringBuilder();
+            while (matcher.find()) {
+                String emojiName = matcher.group(1);
+                String emoji = Emoji.getEmoji(emojiName);
+                if (emoji != null) {
+                    matcher.appendReplacement(result, emoji);
+                } else {
+                    matcher.appendReplacement(result, matcher.group());
+                }
+            }
+            matcher.appendTail(result);
+            message = result.toString();
+        }
 
         String[] words = message.split(" ");
         for (int i = 0; i < words.length; i++) {
@@ -65,7 +91,7 @@ public class MessageManager {
                 }
             }
             if (VChat.instance.getConfig().getBoolean("chat.mentions.enabled")) {
-                if (words[i].startsWith("@") && words[i].length() > 1) {
+                if (words[i].startsWith(Objects.requireNonNull(VChat.instance.getConfig().getString("chat.mentions.symbol"))) && words[i].length() > 1) {
                     TextComponent mention = new TextComponent(words[i]);
                     if (words[i].equalsIgnoreCase("@everyone") && VChat.instance.getConfig().getBoolean("chat.mentions.everyone.enabled")) {
                         for (Player object : Bukkit.getOnlinePlayers()) {
@@ -73,7 +99,6 @@ public class MessageManager {
                                 mentioned_players.add(object);
                             }
                         }
-
                         String pattern = VChat.instance.getConfig().getString("chat.mentions.everyone.pattern");
                         String hover = VChat.instance.getConfig().getString("chat.mentions.everyone.hover");
                         String author_name = author.getName();
@@ -115,12 +140,67 @@ public class MessageManager {
                 }
 
             }
+
             messageComponents.add(new TextComponent(words[i]));
             if (i != words.length - 1) {
                 messageComponents.add(new TextComponent(" "));
             }
         }
 
-        ChatManager.instance.displayMessage(new Message(messageComponents.toArray(new BaseComponent[0]), author, mentioned_players, message, transliterated));
+        ChatManager.instance.displayMessage(new Message(messageComponents.toArray(new BaseComponent[0]), author, mentioned_players, message, transliterated, mentioning));
+    }
+
+    private boolean possibleToTransliterate(Message message) {
+        String startingChar = Objects.requireNonNull(VChat.instance.getConfig().getString("chat.mentions.symbol"));
+
+        String regex = "(?<=^|\\s)" + Pattern.quote(startingChar) + "\\w+(?=\\s|$)";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(message.getRawContent());
+
+        StringBuilder result = new StringBuilder();
+        while (matcher.find()) {
+            String matchedWord = matcher.group();
+            boolean isPlayer = matchedWord.substring(1).equalsIgnoreCase("everyone");
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.getName().equalsIgnoreCase(matchedWord.substring(1))) {
+                    isPlayer = true;
+                }
+            }
+            if (isPlayer) {
+                boolean leftSpace = matcher.start() > 0 && message.getRawContent().charAt(matcher.start() - 1) == ' ';
+                boolean rightSpace = matcher.end() < message.getRawContent().length() && message.getRawContent().charAt(matcher.end()) == ' ';
+                if (leftSpace && rightSpace) matcher.appendReplacement(result, " ");
+                else matcher.appendReplacement(result, "");
+            } else matcher.appendTail(result);
+        }
+        matcher.appendTail(result);
+
+        char[] englishSymbols = "qwertyuiop[]asdfghjkl;'zxcvbnm,.`QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>~".toCharArray();
+        char[] russianSymbols = "йцукенгшщзхъфывапролджэячсмитьбюёЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮЁ".toCharArray();
+        int englishCount = 0;
+        int russianCount = 0;
+        for (char symbol : result.toString().toCharArray()) {
+            for (int i = 0; i < englishSymbols.length; i++) {
+                if (englishSymbols[i] == symbol) englishCount++;
+                if (russianSymbols[i] == symbol) russianCount++;
+            }
+        }
+        return englishCount > russianCount;
+    }
+
+    public BaseComponent[] addTransliterateButton(Player player, Message message) {
+        if (player.equals(message.getAuthor()) && VChat.instance.getConfig().getBoolean("chat.transliteration.enabled") && !message.getTransliterated() && possibleToTransliterate(message)) {
+            List<BaseComponent> finalMessage = new ArrayList<>(List.of(message.getContent()));
+            String buttonPattern = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(VChat.instance.getConfig().getString("chat.transliteration.button-pattern")));
+            String buttonHover = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(VChat.instance.getConfig().getString("chat.transliteration.button-hover")));
+            TextComponent transliterateComponent = new TextComponent(buttonPattern);
+            transliterateComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(buttonHover)));
+            transliterateComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/chat transliterate " + message.getRawContent()));
+            finalMessage.add(new TextComponent(" "));
+            finalMessage.add(transliterateComponent);
+            return finalMessage.toArray(new BaseComponent[0]);
+        } else {
+            return message.getContent();
+        }
     }
 }

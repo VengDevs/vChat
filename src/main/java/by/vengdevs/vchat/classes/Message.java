@@ -1,4 +1,4 @@
-package by.vengdevs.vchat.utils;
+package by.vengdevs.vchat.classes;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.entity.Player;
@@ -12,13 +12,15 @@ public class Message {
     private final List<Player> mentions;
     private final String rawContent;
     private final boolean transliterated;
+    private final boolean mentioning;
 
-    public Message(BaseComponent[] content, Player author, List<Player> mentions, String rawContent, boolean transliterated) {
+    public Message(BaseComponent[] content, Player author, List<Player> mentions, String rawContent, boolean transliterated, boolean mentioning) {
         this.content = content;
         this.author = author;
         this.mentions = mentions;
         this.rawContent = rawContent;
         this.transliterated = transliterated;
+        this.mentioning = mentioning;
     }
 
     public BaseComponent[] getContent() {
@@ -39,5 +41,8 @@ public class Message {
 
     public boolean getTransliterated() {
         return this.transliterated;
+    }
+    public boolean getMentioning() {
+        return this.mentioning;
     }
 }

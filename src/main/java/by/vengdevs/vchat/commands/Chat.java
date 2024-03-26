@@ -1,7 +1,8 @@
 package by.vengdevs.vchat.commands;
 
 import by.vengdevs.vchat.VChat;
-import by.vengdevs.vchat.utils.MessageManager;
+import by.vengdevs.vchat.managers.MessageManager;
+import by.vengdevs.vchat.utils.Emoji;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -37,6 +38,12 @@ public class Chat implements CommandExecutor, TabCompleter {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&bТранслитерация сообщений и ответы | Version " + VChat.instance.getPluginMeta().getVersion()));
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b - &fТеперь в конце Вашего сообщения есть кнопка \"Транслитерировать\", нажав на которую, все английские символы в Вашем сообщении заменятся на русские!"));
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b - &fНажав на имя отправителя сообщения в чате, можно ответить на него."));
+        } else if (strings[0].equalsIgnoreCase("reload")) {
+            if (commandSender.hasPermission("vchat.commands.reload")) {
+                Emoji.loadEmojis();
+                VChat.instance.reloadConfig();
+                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&bКонфиг и эмоджи перезагружены!"));
+            }
         } else if (strings[0].equalsIgnoreCase("transliterate")) {
             char[] russianSymbols = "йцукенгшщзхъфывапролджэячсмитьбюёЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮЁ".toCharArray();
             char[] englishSymbols = "qwertyuiop[]asdfghjkl;'zxcvbnm,.`QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>~".toCharArray();
@@ -49,6 +56,13 @@ public class Chat implements CommandExecutor, TabCompleter {
             if (commandSender instanceof Player) {
                 StringBuilder message = new StringBuilder();
                 for (int i = 1; i < strings.length; i++) {
+                    if (strings[i].startsWith(Objects.requireNonNull(VChat.instance.getConfig().getString("chat.mentions.symbol")))) {
+                        message.append(strings[i]);
+                        if (i != strings.length - 1) {
+                            message.append(" ");
+                        }
+                        continue;
+                    }
                     StringBuilder word = new StringBuilder();
 
                     for (char symbol : strings[i].toCharArray()) {
@@ -63,7 +77,7 @@ public class Chat implements CommandExecutor, TabCompleter {
                 }
 
                 message.append(" ").append(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(VChat.instance.getConfig().getString("chat.transliteration.pattern"))));
-                MessageManager.instance.formatMessage(message.toString(), (Player) commandSender, true);
+                MessageManager.instance.formatMessage(message.toString(), (Player) commandSender, true, false);
             }
 
         }
@@ -81,6 +95,7 @@ public class Chat implements CommandExecutor, TabCompleter {
         if (strings.length == 1) {
             subcommands.add("info");
             subcommands.add("whatsnew");
+            if (commandSender.hasPermission("vchat.commands.reload")) subcommands.add("reload");
         }
         return subcommands;
     }

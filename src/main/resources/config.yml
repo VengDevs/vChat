@@ -1,6 +1,9 @@
 chat:
   enabled: true
   pattern: "&b%NAME% &7❯ &f"
+  emojis:
+    enabled: true
+    symbol: ":"
   transliteration:
     enabled: true
     button-pattern: "&8&l♺"
@@ -19,6 +22,7 @@ chat:
       hover: "Ведёт на: %LINK%"
   mentions:
     enabled: true
+    symbol: "@"
     answer-hover: "Нажмите чтобы ответить"
     pattern: "&e@%MENTION%"
     hover: "Игрок %AUTHOR% упомянул игрока %MENTION%"
