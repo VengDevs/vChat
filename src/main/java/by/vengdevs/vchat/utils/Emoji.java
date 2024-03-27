@@ -45,4 +45,8 @@ public class Emoji {
         if (emoji != null) return ChatColor.translateAlternateColorCodes('&', emoji);
         return null;
     }
+
+    public static Map<String, String> getAllEmojis() {
+        return emojiMap;
+    }
 }

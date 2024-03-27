@@ -147,7 +147,8 @@ public class MessageManager {
             }
         }
 
-        ChatManager.instance.displayMessage(new Message(messageComponents.toArray(new BaseComponent[0]), author, mentioned_players, message, transliterated, mentioning));
+        Message finalMessage = new Message(messageComponents.toArray(new BaseComponent[0]), author, mentioned_players, message, transliterated, mentioning);
+        ChatManager.instance.displayMessage(finalMessage);
     }
 
     private boolean possibleToTransliterate(Message message) {

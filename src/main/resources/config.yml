@@ -9,6 +9,10 @@ chat:
     button-pattern: "&8&l♺"
     button-hover: "Транслитерировать"
     pattern: "&8(транслитерировано)"
+    already-transliterated:
+      title: ""
+      subtitle: "&cСообщение уже транслитерировано"
+      time: 3
   chat-history:
     enabled: true
     message: "&bИстория чата загружена!"

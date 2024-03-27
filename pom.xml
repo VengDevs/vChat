@@ -6,11 +6,10 @@
 
   <groupId>by.vengdevs</groupId>
   <artifactId>vChat</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
   <packaging>jar</packaging>
 
   <name>vChat</name>
-
     <description>Powerful chat plugin for minecraft.</description>
     <properties>
     <java.version>17</java.version>

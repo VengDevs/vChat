@@ -9,6 +9,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,6 +18,7 @@ public class ChatManager {
     public static final ChatManager instance = new ChatManager();
 
     private static final List<Message> chatHistory = new ArrayList<>();
+    private static final HashMap<Player, String> transliteratedMessages = new HashMap<>();
 
     public void displayMessage(Message message) {
         String title = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(VChat.instance.getConfig().getString("chat.mentions.title.title")));
@@ -35,15 +37,23 @@ public class ChatManager {
         Logger.instance.sendConsole(message.getAuthor().getName() + " > " + message.getRawContent());
     }
 
-    private void saveMessageToChatHistory(Message message) {
-        chatHistory.add(message);
-    }
-
     public void displayChatHistory(Player player) {
         for (Message message : chatHistory) {
             player.spigot().sendMessage(message.getContent());
         }
 
         player.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(VChat.instance.getConfig().getString("chat.chat-history.message"))));
+    }
+
+    public void saveToTransliteratedMessages(Player player, String message) {
+        transliteratedMessages.put(player, message);
+    }
+
+    public HashMap<Player, String> getTransliteratedMessages() {
+        return transliteratedMessages;
+    }
+
+    private void saveMessageToChatHistory(Message message) {
+        chatHistory.add(message);
     }
 }
