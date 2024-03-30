@@ -88,6 +88,6 @@ public class Updater {
             public void run() {
                 getUpdates();
             }
-        }.runTaskTimer(VChat.instance, 0L, 20 * 60 * 60 * 6);
+        }.runTaskTimer(VChat.instance, 0L, 20 * 60 * 60);
     }
 }
