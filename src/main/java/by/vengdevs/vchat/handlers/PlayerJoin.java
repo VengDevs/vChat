@@ -10,8 +10,6 @@ public class PlayerJoin implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (VChat.instance.getConfig().getBoolean("chat.chat-history.enabled")) {
-            ChatManager.instance.displayChatHistory(event.getPlayer());
-        }
+        if (VChat.instance.getConfig().getBoolean("chat.chat-history.enabled")) ChatManager.instance.displayChatHistory(event.getPlayer());
     }
 }

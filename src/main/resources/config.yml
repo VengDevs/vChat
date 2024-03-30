@@ -1,6 +1,14 @@
 chat:
   enabled: true
   pattern: "&b%NAME% &7❯ &f"
+  answers:
+    enabled: true
+    hover: "Нажмите чтобы ответить"
+    pattern: "&b┌ &7Ответ на: %MESSAGE%"
+    title:
+      title: ""
+      subtitle: "&b%AUTHOR% ответил(а) вам"
+      time: 3
   emojis:
     enabled: true
     symbol: ":"
@@ -27,14 +35,12 @@ chat:
   mentions:
     enabled: true
     symbol: "@"
-    answer-hover: "Нажмите чтобы ответить"
+    mention-hover: "Нажмите чтобы упомянуть"
     pattern: "&e@%MENTION%"
-    hover: "Игрок %AUTHOR% упомянул игрока %MENTION%"
     everyone:
       enabled: true
       pattern: "&6@everyone"
-      hover: "Игрок %AUTHOR% упомянул всех игроков"
     title:
       title: ""
-      subtitle: "&e%AUTHOR% упомянул вас"
+      subtitle: "&e%AUTHOR% упомянул(а) вас"
       time: 3

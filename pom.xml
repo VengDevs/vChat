@@ -6,7 +6,7 @@
 
   <groupId>by.vengdevs</groupId>
   <artifactId>vChat</artifactId>
-  <version>1.0.4</version>
+  <version>1.0.6</version>
   <packaging>jar</packaging>
 
   <name>vChat</name>

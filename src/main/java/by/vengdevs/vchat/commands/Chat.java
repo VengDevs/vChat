@@ -44,9 +44,8 @@ public class Chat implements CommandExecutor, TabCompleter {
             }
         } else if (strings[0].equalsIgnoreCase("whatsnew")) {
             List<String> whatsnew = new ArrayList<>();
-            whatsnew.add("&bЭмоджи и улучшенная система транслитерации!");
-            whatsnew.add("&f - Теперь написав :emoji-name: в своем сообщение, вы сможете использовать нужный вам эмоджи. Названия всех эмоджи можно узнать написав /chat emojis");
-            whatsnew.add("&f - Транслитерировать определенное сообщение можно только один раз. Транслитерация предлагается только если в сообщении количество английских символов больше чем русских. Во время транслитерации эмоджи, упоминания и ответы не затрагиваются.");
+            whatsnew.add("&bОтветы на сообщения!");
+            whatsnew.add("&f - Теперь нажав на текст сообщения, можно на него ответить!");
             for (String whatsnewLine : whatsnew) {
                 commandSender.sendMessage(Color.convert("&", whatsnewLine));
             }
